@@ -7,6 +7,7 @@ namespace Name;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use Name\Core\BaseClient;
+use Name\Core\Implementation\StreamingHttpClient;
 use Name\Core\Util;
 use Name\Services\PetsService;
 use Name\Services\StoreService;
@@ -58,6 +59,11 @@ class Client extends BaseClient
             ),
             $requestOptions,
         );
+
+        if (is_null($options->streamingTransporter)) {
+            assert(!is_null($options->transporter));
+            $options->streamingTransporter = new StreamingHttpClient($options->transporter);
+        }
 
         /** @var array<string, string|null> $headers */
         $headers = [
